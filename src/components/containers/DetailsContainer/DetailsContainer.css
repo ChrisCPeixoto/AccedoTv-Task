@@ -1,0 +1,31 @@
+.label-details {
+  color: grey;
+  font-size: 18px;
+}
+
+.content-details {
+  font-size: 18px;
+  margin: 0px 10px;
+ }
+
+.description {
+   margin: 0px 0px;
+  }
+
+.img-details{
+  width: 100%;
+  padding: 20px 15px;
+}
+
+.btn-video{
+  width: 120px;
+  margin: 20px 20px;
+}
+
+
+@media screen and (min-width: 768px) {
+  .content-video {
+    height: 360px;
+    margin: 20px 0px;
+  }
+}

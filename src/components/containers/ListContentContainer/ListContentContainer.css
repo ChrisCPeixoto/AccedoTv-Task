@@ -1,0 +1,17 @@
+hr{
+  display: block;
+  margin-top: 0;
+  margin-bottom: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  border-style: inset;
+  border-width: 1px;
+  border-color:blue;
+  width: 25%;
+}
+
+.contactHeader{
+  display: inline-block;
+  margin: 0px 0px;
+  font-size: 36px;
+}

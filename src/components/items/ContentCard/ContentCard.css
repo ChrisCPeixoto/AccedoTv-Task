@@ -1,0 +1,17 @@
+.card {
+  margin-bottom: 20px; }
+
+.card-click {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10; }
+
+.card-img-top{
+  height:145px;
+}
+.card-body{
+  height: 110px;
+}

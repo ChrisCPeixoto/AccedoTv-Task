@@ -1,0 +1,21 @@
+.App-logo {
+  float: left;
+  margin: 15px 0px;
+  width: 100%;
+  height: 90px; }
+
+.main-content {
+  margin: 50px 0px; }
+
+.App-header {
+  width: 100%;
+  display: inline-block; }
+
+
+
+@media screen and (min-width: 768px) {
+  .App-logo {
+    height: 40px;
+    width: initial;
+    margin: 15px; }
+}
