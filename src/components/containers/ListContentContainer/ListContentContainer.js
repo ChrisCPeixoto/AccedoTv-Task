@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Alert from 'react-s-alert';
 
-import Aux from '../../../hoc/Aux'
-import ContentCard from '../../items/ContentCard/ContentCard'
+import Aux from '../../../hoc/Aux';
+import ContentCard from '../../items/ContentCard/ContentCard';
 import './ListContentContainer.css';
 
 class ListContentContainer extends Component {
@@ -29,7 +30,11 @@ class ListContentContainer extends Component {
             }
           })
           .catch((error) => {
-                      alert("Error loading movies");
+                      Alert.error('Eror loading movies', {
+                        position: 'top',
+                        effect: 'slide',
+                        timeout: 'none'
+                      });
                   });
           axios.get('https://react-rent.herokuapp.com/api/serie/', {headers: headers})
           .then(response =>{
@@ -38,8 +43,12 @@ class ListContentContainer extends Component {
                     }
                   })
           .catch((error) => {
-                              alert("Error loading series");
-                          });
+                              Alert.error('Eror loading series', {
+                                position: 'top',
+                                effect: 'slide',
+                                timeout: 'none'
+                              });
+                  });
     }
   }
 

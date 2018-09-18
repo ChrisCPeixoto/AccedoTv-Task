@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import {HotKeys} from 'react-hotkeys';
 import axios from 'axios';
+import Alert from 'react-s-alert';
 
-import Aux from '../../../hoc/Aux'
+import Aux from '../../../hoc/Aux';
 
 import './LoginContainer.css';
 
@@ -10,30 +10,41 @@ class LoginContainer extends Component {
 
   constructor(props) {
     super(props)
-    this.handleKeyDown = this.handleKeyDown.bind(this)
-
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  handleKeyDown(e) {
-    const { cursor, result } = this.state
-    // arrow up/down button should select next/previous list element
-    if (e.keyCode === 38 && cursor > 0) {
-      this.setState( prevState => ({
-        cursor: prevState.cursor - 1
-      }))
-    } else if (e.keyCode === 40 && cursor < result.length - 1) {
-      this.setState( prevState => ({
-        cursor: prevState.cursor + 1
-      }))
+  handleKeyDown(e, field) {
+    const form = e.target.form;
+    const index = Array.prototype.indexOf.call(form, e.target);
+    //could also be a switch
+    if (e.keyCode === 40 && index<2) {
+      form.elements[index + 1].focus();
+      e.preventDefault();
+    }
+    else if(e.keyCode === 38 && index>0){
+     form.elements[index - 1].focus();
+     e.preventDefault();
+    }
+   //can be blocked to just the button
+   else if(e.keyCode === 13){
+      this.handleSubmit(null,form.elements[0].value,form.elements[1].value);
     }
   }
 
-handleSubmit=(event)=>{
+handleSubmit=(event,mail,pswd)=>{
    /* An alternative would be to not use a form, and handle the onClick normally*/
-    event.preventDefault();
-    const user = {
-      email:event.target.emailInput.value,
-      password:event.target.passwordInput.value,
+   let user;
+   if(event){
+        event.preventDefault();
+         user = {
+          email:event.target.emailInput.value,
+          password:event.target.passwordInput.value,
+        }
+    }else{
+      user = {
+       email:mail,
+       password:pswd,
+     }
     }
     const headers = {'X-SimpleOvpApi':'USER_KEY_1'}
     axios.post('https://react-rent.herokuapp.com/api/login/',user, {headers: headers})
@@ -45,30 +56,25 @@ handleSubmit=(event)=>{
       }
     })
     .catch((error) => {
-                alert("Login Failed!!");
-            });
+              Alert.error('Wrong Login', {
+                position: 'top',
+                effect: 'slide',
+                timeout: 'none'
+              });
+      });
 }
 
 
 
-  componentDidMount(){
-
-  }
-
 render() {
-  const map = {
-      'moveUp': 'up',
-      'moveDown': 'down'
-  };
     return (
       <Aux>
-        <HotKeys keyMap={map}>
-          <div className="container">
+          <div className="container" onKeyDown={this.handleKeyDown}>
             <div className="row justify-content-md-center">
-                <form onSubmit={this.handleSubmit} className="contactForm col-sm-12 col-md-6">
+                <form onSubmit={this.handleSubmit.bind(this)}  id="loginForm" className="contactForm col-sm-12 col-md-6">
                   <div className="form-group">
                     <label htmlFor="emailInput">Email address</label>
-                    <input type="text" className="form-control" id="emailInput" aria-describedby="emailHelp" placeholder="Enter email"></input>
+                    <input type="text" className="form-control" autoComplete="off" autoFocus id="emailInput" aria-describedby="emailHelp" placeholder="Enter email"></input>
                   </div>
                   <div className="form-group">
                     <label htmlFor="passwordInput">Password</label>
@@ -80,7 +86,6 @@ render() {
               </form>
             </div>
           </div>
-        </HotKeys>
       </Aux>
     );
   }

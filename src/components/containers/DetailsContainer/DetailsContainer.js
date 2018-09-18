@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
-import ReactPlayer from 'react-player'
+import ReactPlayer from 'react-player';
+import Alert from 'react-s-alert';
 
-import Aux from '../../../hoc/Aux'
+import Aux from '../../../hoc/Aux';
 import './DetailsContainer.css';
 
 class DetailsContainer extends Component {
@@ -11,9 +12,45 @@ class DetailsContainer extends Component {
     super(props)
     this.state = {
       media:{},
-      playing: true
+      playing: false
     }
+    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.playButton = React.createRef();
+    this.backButton = React.createRef();
+  }
 
+  handleKeyDown(e, field) {
+    const id=document.activeElement.id;
+    //could also be a switch
+    //down
+    if (e.keyCode === 40) {
+      e.preventDefault();
+    }
+    //up
+    else if(e.keyCode === 38){
+     document.activeElement.blur();
+     document.addEventListener('scroll', this.trackScrollingUp);
+     e.preventDefault();
+    }
+    //right
+    else if(e.keyCode === 39 && id=='playButton'){
+     this.backButton.current.focus();
+     e.preventDefault();
+    }
+    //left
+    else if(e.keyCode === 37 && id=='backButton'){
+     this.playButton.current.focus();
+     e.preventDefault();
+    }
+   //Enter already do the default behavior we want
+  }
+
+  isBottom(el) {
+    return el.getBoundingClientRect().bottom <= window.innerHeight;
+  }
+
+  isTop(el) {
+    return el.getBoundingClientRect().top < window.innerHeight;
   }
 
   playPause = () => {
@@ -38,15 +75,36 @@ class DetailsContainer extends Component {
         }
       })
       .catch((error) => {
-                  alert("Error loading Media");
+                    Alert.error('Error while loading the media information', {
+                      position: 'top',
+                      effect: 'slide',
+                      timeout: 'none'
+                    });
               });
     }
+    document.addEventListener('scroll', this.trackScrollingDown);
   }
+
+  trackScrollingDown = () => {
+      const wrappedElement = document.getElementById('playButton');
+      if (this.isBottom(wrappedElement)) {
+        this.playButton.current.focus();
+        document.removeEventListener('scroll', this.trackScrollingDown);
+      }
+  };
+
+  trackScrollingUp = () => {
+      const wrappedElement = document.getElementById('playButton');
+      if (this.isTop(wrappedElement)) {
+        document.removeEventListener('scroll', this.trackScrollingUp);
+        document.addEventListener('scroll', this.trackScrollingDown);
+      }
+  };
 
   render() {
     return (
       <Aux>
-        <div className="container">
+        <div className="container"  onKeyDown={this.handleKeyDown}>
           <div className="row justify-content-md-center">
             <div className="col-sm-12 col-md-auto ">
               <span className="contactHeader">{this.state.media.type=='movie' ? 'Movie' : 'Serie'}</span>
@@ -55,7 +113,7 @@ class DetailsContainer extends Component {
           </div>
           <div className="row justify-content-md-center">
             <div className="col-sm-12 col-md-8 ">
-              <img className="img-details" src={this.state.media.imageSrc}alt="Card image cap"></img>
+              <img className="img-details" src={this.state.media.imageSrc}alt={this.state.media.title}></img>
             </div>
           </div>
           <div className="row justify-content-md-center">
@@ -85,9 +143,9 @@ class DetailsContainer extends Component {
                     <span className="content-details">{this.state.media.releaseDate}</span>
                   </div>
                   <div className="row justify-content-md-center">
-                    <ReactPlayer className="content-video" url={this.state.media.videoSrc} playing={this.state.playing}  />
-                    <button className="btn btn-outline-primary btn-video" onClick={this.playPause}>{this.state.playing ? 'Pause' : 'Play'}</button>
-                    <Link to="/list"><button className="btn btn-outline-primary btn-video">Back to List</button></Link>
+                    <ReactPlayer id="videoContainer"  className="content-video" url={this.state.media.videoSrc} playing={this.state.playing}  />
+                    <button id="playButton" ref={this.playButton} className="btn btn-outline-primary btn-video"  onClick={this.playPause}>{this.state.playing ? 'Pause' : 'Play'}</button>
+                    <Link to="/list"><button  ref={this.backButton} id="backButton" className="btn btn-outline-primary btn-video">Back to List</button></Link>
                   </div>
               </div>
             </div>
