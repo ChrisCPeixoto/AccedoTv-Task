@@ -85,6 +85,10 @@ class DetailsContainer extends Component {
     document.addEventListener('scroll', this.trackScrollingDown);
   }
 
+  componentWillUnmount() {
+      document.removeEventListener('scroll', this.trackScrolling);
+    }
+
   trackScrollingDown = () => {
       const wrappedElement = document.getElementById('playButton');
       if (this.isBottom(wrappedElement)) {
